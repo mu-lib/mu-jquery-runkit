@@ -1,0 +1,29 @@
+{
+  "name": "mu-jquery-runkit",
+  "version": "0.0.0",
+  "description": "A jQuery runkit plugin",
+  "main": "jquery.runkit.js",
+  "scripts": {
+    "release": "standard-version",
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mu-lib/mu-jquery-runkit.git"
+  },
+  "author": "Mikael Karon <mikael@karon.se>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mu-lib/mu-jquery-runkit/issues"
+  },
+  "homepage": "https://github.com/mu-lib/mu-jquery-runkit#readme",
+  "dependencies": {},
+  "peerDependencies": {
+    "jquery": "^3.1.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "standard-version": "^2.4.0"
+  }
+}
