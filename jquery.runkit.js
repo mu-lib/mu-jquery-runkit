@@ -7,40 +7,52 @@
     root["mu-jquery-runkit/jquery.runkit"] = factory.apply(root, modules.map(function (m) {
       return this[m] || root[m];
     }, {
-        "jquery": root.jQuery,
         "runkit": root.RunKit
       }));
   }
-})(["jquery", "runkit"], this, function ($, runkit) {
-  return $.fn.runkit = function () {
+})(["runkit"], this, function (runkit) {
+  return function () {
+    var $ = this.constructor;
+
+    function ready($event) {
+      if ($event.result !== false) {
+        $($event.target).remove();
+      }
+    }
+
+    function create($event, notebook) {
+      if ($event.result === false) {
+        $(notebook.iframe).remove();
+      }
+    }
+
+    function init($event) {
+      var target = $event.target;
+      var $target = $(target);
+
+      if ($event.result !== false) {
+        $target
+          .one("create.runkit", create)
+          .trigger("create.runkit", runkit.createNotebook({
+            "element": $target.parent().get(0),
+            "source": runkit.sourceFromElement(target),
+            "onEvaluate": function (uri) {
+              $target.trigger("evaluate.runkit", uri);
+            },
+            "onURLChanged": function (notebook) {
+              $target.trigger("url.runkit", notebook);
+            },
+            "onLoad": function (notebook) {
+              $target
+                .one("ready.runkit", ready)
+                .trigger("ready.runkit", notebook);
+            }
+          }));
+      }
+    }
 
     return this
-      .one("init.runkit", function ($event) {
-        var target = $event.target;
-        var $target = $(target);
-
-        if ($event.result !== false) {
-          $target
-            .one("create.runkit", function ($e, notebook) {
-              if ($e.result === false) {
-                $(notebook.iframe).remove();
-              }
-            })
-            .trigger("create.runkit", runkit.createNotebook({
-              "element": $target.parent().get(0),
-              "source": runkit.sourceFromElement(target),
-              "onLoad": function (notebook) {
-                $target
-                  .one("ready.runkit", function ($e) {
-                    if ($e.result !== false) {
-                      $($e.target).remove();
-                    }
-                  })
-                  .trigger("ready.runkit", notebook);
-              }
-            }));
-        }
-      })
+      .one("init.runkit", init)
       .trigger("init.runkit");
   }
 });
