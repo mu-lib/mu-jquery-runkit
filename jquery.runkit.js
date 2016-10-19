@@ -55,6 +55,6 @@
 
     return this
       .one("init.runkit", init)
-      .trigger("init.runkit", argument.lenght ? slice.call(arguments) : {});
+      .trigger("init.runkit", arguments.lenght ? slice.call(arguments) : {});
   }
 });
