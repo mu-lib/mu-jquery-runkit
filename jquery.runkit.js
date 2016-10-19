@@ -11,6 +11,8 @@
       }));
   }
 })(["runkit"], this, function (runkit) {
+  var slice = Array.prototype.slice;
+
   return function () {
     var $ = this.constructor;
 
@@ -26,15 +28,15 @@
       }
     }
 
-    function init($event) {
+    function init($event, config) {
       var target = $event.target;
       var $target = $(target);
 
       if ($event.result !== false) {
         $target
           .one("create.runkit", create)
-          .trigger("create.runkit", runkit.createNotebook({
-            "element": $target.parent().get(0),
+          .trigger("create.runkit", runkit.createNotebook($.extend({}, config, {
+            "element": config.element || $target.parent().get(0),
             "source": runkit.sourceFromElement(target),
             "onEvaluate": function (uri) {
               $target.trigger("evaluate.runkit", uri);
@@ -47,12 +49,12 @@
                 .one("ready.runkit", ready)
                 .trigger("ready.runkit", notebook);
             }
-          }));
+          })));
       }
     }
 
     return this
       .one("init.runkit", init)
-      .trigger("init.runkit");
+      .trigger("init.runkit", argument.lenght ? slice.call(arguments) : {});
   }
 });
